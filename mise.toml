@@ -1,0 +1,5 @@
+# `node` builds and checks the app.
+# `pre-commit` is here so that `mise install` is the whole of setup.
+[tools]
+node = "26.12.0"
+pre-commit = "4.7.0"

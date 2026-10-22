@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: check
+        name: check (tsrs, biome)
+        entry: npm run check
+        language: system
+        pass_filenames: false
+        always_run: true

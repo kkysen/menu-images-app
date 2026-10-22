@@ -1,0 +1,29 @@
+{
+  "name": "menu-images-app",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Point your phone camera at a menu and see pictures of the dishes.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kkysen/menu-images-app.git"
+  },
+  "scripts": {
+    "postinstall": "node scripts/copy-assets.js",
+    "dev": "vite --host",
+    "build": "tsrs --noEmit && vite build",
+    "preview": "vite preview --host",
+    "check": "tsrs --noEmit && biome check"
+  },
+  "dependencies": {
+    "@gutenye/ocr-browser": "^1.4.9",
+    "@gutenye/ocr-models": "^1.4.2",
+    "onnxruntime-web": "^1.30.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.2",
+    "tsrs": "0.18.0-ts7.1.0-dev.20260929",
+    "vite": "^8.3.5",
+    "vite-plugin-pwa": "^2.0.0"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  // Skip what `.gitignore` does: the build, dependencies, and the copied OCR assets.
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "linter": {
+    "rules": {
+      "complexity": {
+        // `tsconfig.json`'s `noPropertyAccessFromIndexSignature` wants the opposite:
+        // brackets for a key that's only known to be in an index signature.
+        "useLiteralKeys": "off"
+      }
+    }
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "lineWidth": 100
+  }
+}
