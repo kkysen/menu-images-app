@@ -82,6 +82,7 @@ async function scan() {
   dishList.replaceChildren();
   setStatus("Reading menu…");
   let dishes: Dish[];
+  const start = performance.now();
   try {
     dishes = findDishes(await (await ocr).readText(frame));
   } catch (error) {
@@ -92,11 +93,13 @@ async function scan() {
   if (id !== scanId) {
     return;
   }
+  // Shown while we find the best image size for reading small text quickly on real phones.
+  const timing = `Read ${frame.width}×${frame.height} in ${((performance.now() - start) / 1000).toFixed(1)} s.`;
   if (dishes.length === 0) {
-    setStatus("No dishes found. Try getting closer or holding the phone steadier.");
+    setStatus(`No dishes found. Try getting closer or holding the phone steadier. ${timing}`);
     return;
   }
-  setStatus("");
+  setStatus(`Found ${dishes.length} dishes. ${timing}`);
   results.hidden = false;
   for (const dish of dishes) {
     showDish(dish, id);
