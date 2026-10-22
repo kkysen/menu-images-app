@@ -39,6 +39,9 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          # All of history, since the app's version is the number of commits.
+          fetch-depth: 0
 
       - uses: jdx/mise-action@v5.2.2
 

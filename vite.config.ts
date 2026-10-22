@@ -1,8 +1,10 @@
+import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { defineConfig, type Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  define: { __APP_VERSION__: JSON.stringify(appVersion()) },
   // Relative, so the same build works at a domain root or under a GitHub Pages repo path.
   base: "./",
   resolve: {
@@ -75,4 +77,15 @@ function latin1JsClipper(): Plugin {
       return undefined;
     },
   };
+}
+
+/**
+ * The version shown in the app, so it's clear which one a phone is running:
+ * the number of commits, which goes up with every push, and the commit it was built from.
+ * A build with uncommitted changes is marked `dev`.
+ */
+function appVersion(): string {
+  const git = (command: string) => execSync(`git ${command}`, { encoding: "utf8" }).trim();
+  const version = `v${git("rev-list --count HEAD")} (${git("rev-parse --short HEAD")})`;
+  return git("status --porcelain") ? `${version} dev` : version;
 }

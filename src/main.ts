@@ -1,6 +1,6 @@
 import "./style.css";
 import { registerSW } from "virtual:pwa-register";
-import { openCamera, takePicture } from "./camera";
+import { describeCamera, openCamera, takePicture } from "./camera";
 import { type Dish, findDishes } from "./dishes";
 import { type DishInfo, lookUpDish } from "./images";
 
@@ -31,6 +31,7 @@ const capture = element<HTMLButtonElement>("capture");
 const retake = element<HTMLButtonElement>("retake");
 const upload = element<HTMLInputElement>("upload");
 const details = element<HTMLDialogElement>("details");
+const info = element<HTMLParagraphElement>("info");
 
 let scanId = 0;
 let stream: MediaStream | undefined;
@@ -44,6 +45,7 @@ async function startCamera() {
   try {
     stream = await openCamera();
     camera.srcObject = stream;
+    info.textContent = `${__APP_VERSION__} · ${describeCamera(stream)}`;
     setStatus("");
   } catch (error) {
     console.error(error);
@@ -230,6 +232,7 @@ details.addEventListener("click", (event) => {
   }
 });
 
+info.textContent = __APP_VERSION__;
 void startCamera();
 ocr
   .then(({ loadOcr }) => loadOcr())

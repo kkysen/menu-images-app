@@ -4,6 +4,7 @@
  */
 type FocusCapabilities = MediaTrackCapabilities & { focusMode?: string[] };
 type FocusConstraints = MediaTrackConstraintSet & { focusMode?: string };
+type FocusSettings = MediaTrackSettings & { focusMode?: string };
 type ImageCaptureConstructor = new (
   track: MediaStreamTrack,
 ) => {
@@ -61,6 +62,20 @@ async function findMainBackCamera(): Promise<MediaDeviceInfo | undefined> {
     }
   }
   return best?.device;
+}
+
+/** Describes the open camera, e.g. `camera2 0, facing back · 3840×2160 · focus continuous`. */
+export function describeCamera(stream: MediaStream): string {
+  const [track] = stream.getVideoTracks();
+  if (!track) {
+    return "no camera";
+  }
+  const settings: FocusSettings = track.getSettings();
+  return [
+    track.label || "camera",
+    `${settings.width}×${settings.height}`,
+    `focus ${settings.focusMode ?? "unknown"}`,
+  ].join(" · ");
 }
 
 async function enableAutofocus(track: MediaStreamTrack) {
