@@ -20,27 +20,43 @@ const RESOLUTION = { width: { ideal: 3840 }, height: { ideal: 2160 } };
  * which on many phones (e.g. Samsung's) has fixed focus, so it's blurry up close.
  */
 export async function openCamera(): Promise<MediaStream> {
-  let stream = await navigator.mediaDevices.getUserMedia({
-    video: { facingMode: "environment", ...RESOLUTION },
-    audio: false,
-  });
+  const backCamera = { facingMode: "environment", ...RESOLUTION };
+  let stream = await getVideo(backCamera);
   // Camera labels are only readable once the camera's been allowed, so look after opening one.
   const main = await findMainBackCamera();
   const [track] = stream.getVideoTracks();
   if (main && track && track.getSettings().deviceId !== main.deviceId) {
-    for (const oldTrack of stream.getTracks()) {
-      oldTrack.stop();
+    stopStream(stream);
+    try {
+      stream = await getVideo({ deviceId: { exact: main.deviceId }, ...RESOLUTION });
+    } catch (error) {
+      // Android may not have let go of the camera just closed yet, so give it a moment.
+      console.warn("Could not open the main camera, so retrying", error);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      try {
+        stream = await getVideo({ deviceId: { exact: main.deviceId }, ...RESOLUTION });
+      } catch (error) {
+        // A blurry camera beats none at all.
+        console.warn("Could not open the main camera, so using the default one", error);
+        stream = await getVideo(backCamera);
+      }
     }
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { deviceId: { exact: main.deviceId }, ...RESOLUTION },
-      audio: false,
-    });
   }
   const [newTrack] = stream.getVideoTracks();
   if (newTrack) {
     await enableAutofocus(newTrack);
   }
   return stream;
+}
+
+function getVideo(video: MediaTrackConstraints): Promise<MediaStream> {
+  return navigator.mediaDevices.getUserMedia({ video, audio: false });
+}
+
+function stopStream(stream: MediaStream) {
+  for (const track of stream.getTracks()) {
+    track.stop();
+  }
 }
 
 /**

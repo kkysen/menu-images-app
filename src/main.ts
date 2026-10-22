@@ -49,7 +49,9 @@ async function startCamera() {
     setStatus("");
   } catch (error) {
     console.error(error);
-    setStatus('Camera unavailable. Use "Photo" to pick a picture of a menu instead.');
+    // With the error, since it's the only way to tell why from a phone.
+    const reason = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+    setStatus(`Camera unavailable (${reason}). Use "Photo" to pick a picture of a menu instead.`);
     capture.disabled = true;
   }
 }
