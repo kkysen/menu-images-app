@@ -11,6 +11,8 @@ export default defineConfig({
     // the default build also has WebGPU, which needs a different, larger WebAssembly file.
     alias: [{ find: /^onnxruntime-web$/, replacement: "onnxruntime-web/wasm" }],
   },
+  // The dev server bundles dependencies separately, without `plugins`, so it needs the fix too.
+  optimizeDeps: { rolldownOptions: { plugins: [latin1JsClipper()] } },
   build: { chunkSizeWarningLimit: 12 * 1024 },
   plugins: [
     latin1JsClipper(),
