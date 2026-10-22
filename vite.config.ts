@@ -42,7 +42,8 @@ export default defineConfig({
             options: { cacheName: "ocr-assets" },
           },
           {
-            urlPattern: /^https:\/\/(en\.wikipedia\.org|commons\.wikimedia\.org|upload\.wikimedia\.org)\//,
+            urlPattern:
+              /^https:\/\/(en\.wikipedia\.org|commons\.wikimedia\.org|upload\.wikimedia\.org)\//,
             handler: "StaleWhileRevalidate",
             options: {
               cacheName: "dish-info",

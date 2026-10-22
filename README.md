@@ -29,7 +29,6 @@ pre-commit install
 ```
 
 `npm install` also copies the OCR models and runtime into `public/` (`scripts/copy-assets.js`).
-
 - `npm run dev`: serve locally (`--host`, so a phone on the same Wi-Fi can open it;
   the camera needs HTTPS there, so use "Photo" or the deployed site).
 - `npm run check`: type-check with `tsrs` and lint/format-check with `biome`.
