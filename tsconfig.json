@@ -6,7 +6,7 @@
     "lib": ["es2024", "dom", "dom.iterable"],
     "module": "preserve",
     "moduleResolution": "bundler",
-    "types": ["vite/client"],
+    "types": ["vite/client", "vite-plugin-pwa/client"],
     "noEmit": true,
     "skipLibCheck": false,
 

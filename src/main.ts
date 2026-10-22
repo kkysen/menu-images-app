@@ -1,7 +1,12 @@
 import "./style.css";
+import { registerSW } from "virtual:pwa-register";
 import { openCamera, takePicture } from "./camera";
 import { type Dish, findDishes } from "./dishes";
 import { type DishInfo, lookUpDish } from "./images";
+
+// Check for a new version at every launch, and reload into it as soon as it's downloaded,
+// rather than running the saved old version until the app is next opened.
+registerSW({ immediate: true });
 
 // Loaded separately, since the OCR library bundles OpenCV and is over 10 MB.
 const ocr = import("./ocr");
