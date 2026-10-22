@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      # Node, as `mise.toml` pins it.
+      - uses: jdx/mise-action@v5.2.2
+
+      - uses: actions/cache@v6.1.0
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-
+
+      - run: npm ci
+
+      - run: npm run check
+
+  # Publish the app, since the camera only works on a page served over HTTPS.
+  pages:
+    needs: check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: jdx/mise-action@v5.2.2
+
+      - uses: actions/cache@v6.1.0
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-
+
+      - name: build
+        run: |
+          npm ci
+          npm run build
+
+      - uses: actions/configure-pages@v6.0.0
+
+      - uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: dist
+
+      - uses: actions/deploy-pages@v5.0.1
+        id: deploy
