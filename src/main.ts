@@ -1,12 +1,16 @@
 import "./style.css";
+import { openCamera, takePicture } from "./camera";
 import { type Dish, findDishes } from "./dishes";
 import { type DishInfo, lookUpDish } from "./images";
 
 // Loaded separately, since the OCR library bundles OpenCV and is over 10 MB.
 const ocr = import("./ocr");
 
-/** Captured frames are scaled down to this many pixels on their longest side, to keep OCR fast. */
-const MAX_FRAME_SIZE = 1280;
+/**
+ * Captured frames are scaled down to this many pixels on their longest side, to keep OCR fast.
+ * The OCR reads text at the size it's given, so scaling down much further makes small print unreadable.
+ */
+const MAX_FRAME_SIZE = 2048;
 
 function element<T extends HTMLElement>(id: string): T {
   return document.getElementById(id) as T;
@@ -24,6 +28,7 @@ const upload = element<HTMLInputElement>("upload");
 const details = element<HTMLDialogElement>("details");
 
 let scanId = 0;
+let stream: MediaStream | undefined;
 
 function setStatus(text: string) {
   status.textContent = text;
@@ -32,10 +37,8 @@ function setStatus(text: string) {
 
 async function startCamera() {
   try {
-    camera.srcObject = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } },
-      audio: false,
-    });
+    stream = await openCamera();
+    camera.srcObject = stream;
     setStatus("");
   } catch (error) {
     console.error(error);
@@ -172,11 +175,18 @@ function showDetails(dish: Dish, info: DishInfo) {
   details.showModal();
 }
 
-capture.addEventListener("click", () => {
-  if (!camera.videoWidth) {
+capture.addEventListener("click", async () => {
+  if (!stream || !camera.videoWidth) {
     return;
   }
-  freeze(camera, camera.videoWidth, camera.videoHeight);
+  capture.disabled = true;
+  try {
+    const picture = await takePicture(stream, camera);
+    freeze(picture, picture.width, picture.height);
+    picture.close();
+  } finally {
+    capture.disabled = false;
+  }
   void scan();
 });
 
