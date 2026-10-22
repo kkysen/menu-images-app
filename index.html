@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#111111" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Menu Images</title>
+  </head>
+  <body>
+    <main id="viewer">
+      <video id="camera" autoplay muted playsinline></video>
+      <canvas id="frame" hidden></canvas>
+      <div id="overlay"></div>
+    </main>
+    <p id="status" role="status"></p>
+    <section id="results" hidden>
+      <ul id="dish-list"></ul>
+    </section>
+    <footer id="controls">
+      <label class="button secondary" id="upload-label">
+        Photo
+        <input id="upload" type="file" accept="image/*" hidden />
+      </label>
+      <button id="capture" type="button" class="capture" aria-label="Scan menu"></button>
+      <button id="retake" type="button" class="button secondary" hidden>Retake</button>
+    </footer>
+    <dialog id="details">
+      <img id="details-image" alt="" />
+      <h2 id="details-title">Dish</h2>
+      <p id="details-summary"></p>
+      <p><a id="details-link" href="https://en.wikipedia.org/" target="_blank" rel="noopener">Source</a></p>
+      <form method="dialog"><button type="submit" class="button">Close</button></form>
+    </dialog>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

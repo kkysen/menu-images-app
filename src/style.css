@@ -1,0 +1,213 @@
+:root {
+  --bg: #111;
+  --fg: #f5f5f5;
+  --muted: #aaa;
+  --panel: rgba(24, 24, 24, 0.92);
+  --accent: #ffb238;
+  color-scheme: dark;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+#viewer {
+  position: fixed;
+  inset: 0 0 calc(env(safe-area-inset-bottom) + 96px);
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+}
+
+#camera,
+#frame {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  vertical-align: top;
+}
+
+#status {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 16px);
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--panel);
+  text-align: center;
+}
+
+.marker {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--panel);
+  cursor: pointer;
+}
+
+.marker img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.marker.loading {
+  animation: pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+#results {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(env(safe-area-inset-bottom) + 96px);
+  max-height: 35vh;
+  overflow-y: auto;
+  background: var(--panel);
+  border-radius: 16px 16px 0 0;
+}
+
+#dish-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 16px;
+}
+
+#dish-list button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+#dish-list img {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #333;
+}
+
+#dish-list .loading img {
+  animation: pulse 1s ease-in-out infinite alternate;
+}
+
+#dish-list .missing {
+  color: var(--muted);
+}
+
+#controls {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(env(safe-area-inset-bottom) + 96px);
+  padding: 0 16px env(safe-area-inset-bottom);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background: var(--panel);
+}
+
+#upload-label {
+  justify-self: start;
+}
+
+#retake {
+  grid-column: 2;
+}
+
+.capture {
+  grid-column: 2;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 4px solid var(--fg);
+  background: var(--accent);
+  cursor: pointer;
+}
+
+.capture:disabled {
+  opacity: 0.3;
+}
+
+.button {
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #111;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button.secondary {
+  background: #333;
+  color: var(--fg);
+}
+
+#details {
+  width: min(92vw, 480px);
+  max-height: 85vh;
+  padding: 0 0 16px;
+  border: 0;
+  border-radius: 16px;
+  background: #1c1c1c;
+  color: var(--fg);
+}
+
+#details::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+#details-image {
+  width: 100%;
+  max-height: 50vh;
+  object-fit: cover;
+  display: block;
+}
+
+#details h2,
+#details p,
+#details form {
+  margin: 12px 16px 0;
+}
+
+#details a {
+  color: var(--accent);
+}
