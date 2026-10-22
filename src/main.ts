@@ -135,6 +135,7 @@ function showDish(dish: Dish, id: number) {
       if (!info) {
         marker.remove();
         row.classList.add("missing");
+        rowButton.addEventListener("click", () => showDetails(dish, undefined));
         return;
       }
       const markerImage = document.createElement("img");
@@ -150,6 +151,7 @@ function showDish(dish: Dish, id: number) {
       console.error(error);
       marker.remove();
       row.classList.replace("loading", "missing");
+      rowButton.addEventListener("click", () => showDetails(dish, undefined));
     },
   );
 }
@@ -172,14 +174,24 @@ function positionMarker(marker: HTMLElement, dish: Dish) {
   marker.style.top = `${offsetY + (top + height / 2) * scale}px`;
 }
 
-function showDetails(dish: Dish, info: DishInfo) {
-  element<HTMLImageElement>("details-image").src = info.imageUrl;
+/** Shows a dish's photo and description, or just its name when no photo was found. */
+function showDetails(dish: Dish, info: DishInfo | undefined) {
+  const image = element<HTMLImageElement>("details-image");
+  const link = element<HTMLAnchorElement>("details-link");
+  image.hidden = !info;
+  link.hidden = !info;
+  if (info) {
+    image.src = info.imageUrl;
+    link.href = info.pageUrl;
+  }
   element<HTMLHeadingElement>("details-title").textContent =
-    info.title.toLowerCase() === dish.name.toLowerCase()
-      ? info.title
+    !info || info.title.toLowerCase() === dish.name.toLowerCase()
+      ? (info?.title ?? dish.name)
       : `${dish.name} (${info.title})`;
-  element<HTMLParagraphElement>("details-summary").textContent = info.summary;
-  element<HTMLAnchorElement>("details-link").href = info.pageUrl;
+  element<HTMLParagraphElement>("details-summary").textContent = info?.summary ?? "No photo found.";
+  // A search the viewer opens themselves, which needs no API, unlike showing Google's results here.
+  element<HTMLAnchorElement>("details-google").href =
+    `https://www.google.com/search?${new URLSearchParams({ q: dish.name, udm: "2" })}`;
   details.showModal();
 }
 

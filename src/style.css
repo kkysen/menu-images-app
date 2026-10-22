@@ -202,6 +202,10 @@ body {
   display: block;
 }
 
+#details-image[hidden] {
+  display: none;
+}
+
 #details h2,
 #details p,
 #details form {
@@ -210,4 +214,9 @@ body {
 
 #details a {
   color: var(--accent);
+}
+
+#details .links {
+  display: flex;
+  gap: 20px;
 }
