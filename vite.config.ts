@@ -41,13 +41,14 @@ export default defineConfig({
             handler: "CacheFirst",
             options: { cacheName: "ocr-assets" },
           },
+          // `src/images.ts` saves its own lookups, so only the photos themselves are cached here.
+          // A thumbnail's URL never shows a different photo, so the cached one is always right.
           {
-            urlPattern:
-              /^https:\/\/(en\.wikipedia\.org|commons\.wikimedia\.org|upload\.wikimedia\.org)\//,
-            handler: "StaleWhileRevalidate",
+            urlPattern: /^https:\/\/upload\.wikimedia\.org\//,
+            handler: "CacheFirst",
             options: {
-              cacheName: "dish-info",
-              expiration: { maxEntries: 500, maxAgeSeconds: 30 * 24 * 60 * 60 },
+              cacheName: "dish-photos",
+              expiration: { maxEntries: 1000, maxAgeSeconds: 90 * 24 * 60 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },
