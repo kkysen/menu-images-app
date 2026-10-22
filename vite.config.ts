@@ -5,7 +5,6 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   // Relative, so the same build works at a domain root or under a GitHub Pages repo path.
   base: "./",
-  // The OCR chunk bundles OpenCV, which can't be split, so only warn about chunks bigger than it.
   resolve: {
     // Just ONNX Runtime's WebAssembly (CPU) backend, which `scripts/copy-assets.js` copies:
     // the default build also has WebGPU, which needs a different, larger WebAssembly file.
@@ -13,6 +12,7 @@ export default defineConfig({
   },
   // The dev server bundles dependencies separately, without `plugins`, so it needs the fix too.
   optimizeDeps: { rolldownOptions: { plugins: [latin1JsClipper()] } },
+  // The OCR chunk bundles OpenCV, which can't be split, so only warn about chunks bigger than it.
   build: { chunkSizeWarningLimit: 12 * 1024 },
   plugins: [
     latin1JsClipper(),
